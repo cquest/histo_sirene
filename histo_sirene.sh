@@ -13,16 +13,4 @@
 unzip -p $1 | iconv -f cp1252 -t utf8 |
 csvcut -c SIREN,DATEMAJ,NIC,SIRETPS,NICSIEGE,VMAJ,EVE -d ';' -v| \
 egrep '(^SIREN|,(CTE|CTS|MTDE|MTAE|MTDS|MTAS|STE|STS|SU)$)' | \
-csvsql --query "
-select  o.siren||substr('0000' || o.nic, -5, 5) as SIRET_OLD,
-        n.siren||substr('0000' || n.nic, -5, 5) as SIRET_NEW,
-        o.datemaj
-    from stdin o
-    join stdin n on (o.siren=n.siren and o.datemaj=n.datemaj and o.nic<n.nic)
-union
-select  siretps as SIRET_OLD,
-        siren||substr('0000' || nic, -5, 5) as SIRET_NEW,
-        datemaj
-    from stdin
-    where siretps <> '' and cast(siren as text) <> substr(siretps, 0, 10);
-" > ${1/.zip}-histo.csv
+csvsql --query "SELECT siret_old, siret_new, datemaj FROM (SELECT o.siren||substr('0000' || o.nic, -5, 5) AS siret_old, n.siren||substr('0000' || n.nic, -5, 5) AS siret_new, o.datemaj FROM stdin o JOIN stdin n ON (o.siren=n.siren AND o.datemaj=n.datemaj AND o.nic<n.nic) UNION SELECT siretps as siret_old, siren||substr('0000' || nic, -5, 5) as siret_new, datemaj FROM stdin WHERE siretps <> '' AND cast(siren AS text) <> substr(siretps, 0, 10)) AS histo GROUP BY siret_old, siret_new, datemaj ORDER BY datemaj;" > ${1/.zip}-histo.csv
