@@ -7,7 +7,7 @@ do
   FILE=$(echo $f | sed 's/.zip//')
   if [ ! -f $FILE-histo.csv ]
   then
-    sh histo_sirene.sh $f
+    bash histo_sirene.sh $f
   fi
 done
 
@@ -16,4 +16,4 @@ csvstack sirene_2018*.csv > histo_sirene_2018.csv
 
 # publication...
 . ~/.keychain/cquest-Precision-WorkStation-T7500-sh
-rsync *.csv root@sc1.cquest.org:/var/www/html/histo_sirene -av
+rsync *.csv root@sc1.cquest.org:/var/www/html/histo_sirene -avz
