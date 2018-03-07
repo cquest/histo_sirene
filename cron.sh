@@ -15,5 +15,4 @@ done
 csvstack sirene_2018*.csv > histo_sirene_2018.csv
 
 # publication...
-. ~/.keychain/cquest-Precision-WorkStation-T7500-sh
-rsync *.csv root@sc1.cquest.org:/var/www/html/histo_sirene -avz
+cp *.csv /var/www/html/data/histo_sirene
