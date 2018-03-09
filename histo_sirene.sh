@@ -25,6 +25,6 @@ csvsql --query "select o.siren||substr('0000' || o.nic, -5, 5) as SIRET_OLD, \
                        siren||substr('0000' || nic, -5, 5) as siret_new, \
                        datemaj \
                     from stdin \
-                    where siretps <> '' and cast(siren as text) <> substr(siretps, 0, 10)
+                    where siretps <> '' and cast(siren as text) <> substr(siretps, 0, 10) \
                     order by datemaj, siret_new, siret_old;" > ${1/.zip}-histo.csv
 
