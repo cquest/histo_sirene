@@ -3,7 +3,7 @@
 # extraction des changements de SIRET dans les fichiers de maj quotidien SIRENE
 
 # unzip = décompression du zip
-# iconv = conversion de l'encodage 
+# iconv = conversion de l'encodage
 # csvcut = extraction des colonnes qui nous intéressent + conformation CSV
 # egrep = extraction de slignes qui nous intéressent
 # csvsql = rapprochement pour obtenir le lien ancien -> nouveau SIRET
@@ -21,8 +21,10 @@ csvsql --query "select o.siren||substr('0000' || o.nic, -5, 5) as SIRET_OLD, \
                     left join stdin f on f.siren=n.siren and f.datemaj=n.datemaj and f.nic < n.nic and f.nic > o.nic \
                     where f.siren is null \
                   union \
-                select siren||substr('0000' || nic, -5, 5) as SIRET_NEW, \
-                             siretps, datemaj \
+                select siretps as siret_old,\
+                       siren||substr('0000' || nic, -5, 5) as siret_new, \
+                       datemaj \
                     from stdin \
-                    where siretps <> '' and cast(siren as text) <> substr(siretps, 0, 10);" > ${1/.zip}-histo.csv
+                    where siretps <> '' and cast(siren as text) <> substr(siretps, 0, 10)
+                    order by datemaj, siret_new, siret_old;" > ${1/.zip}-histo.csv
 
