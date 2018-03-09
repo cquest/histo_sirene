@@ -10,7 +10,7 @@
 
 # dépendances: csvkit, unzip (sudo apt install csvkit unzip)
 
-unzip -p $1|iconv -f cp1252 -t utf8 |
+unzip -p $1 | iconv -f cp1252 -t utf8 |
 csvcut -c SIREN,DATEMAJ,NIC,SIRETPS,NICSIEGE,VMAJ,EVE -d ';' -v| \
 egrep '(^SIREN|,(CTE|CTS|MTDE|MTAE|MTDS|MTAS|STE|STS|SU)$)' | \
 csvsql --query "select o.siren||substr('0000' || o.nic, -5, 5) as SIRET_OLD, \
